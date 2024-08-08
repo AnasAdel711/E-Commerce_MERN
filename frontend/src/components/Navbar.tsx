@@ -99,7 +99,7 @@ function ResponsiveAppBar() {
                 fontWeight: 700,
                 }}
             >
-                LOGO
+                Tech Laps
             </Typography>
 
             <Box sx={{ flexGrow: 0 }}>
