@@ -13,14 +13,17 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useAuth } from '../context/Auth/AuthContext';
+import { Button, Grid } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
 
-  const {username, token} = useAuth();
+  const {username, isAuthenticated} = useAuth();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  const navigate = useNavigate()
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -37,7 +40,9 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  console.log('From navbar', {username, token})
+  const handleLogin = () => {
+    navigate('/login')
+  }
 
   return (
     <AppBar position="static">
@@ -108,10 +113,18 @@ function ResponsiveAppBar() {
             </Typography>
 
             <Box sx={{ flexGrow: 0 }}>
+              {isAuthenticated ? <>
                 <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
+                  <Grid container alignItems={"center"} justifyContent={"center"} gap={2}>
+                  <Grid item>
+                    <Typography>{username}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt={username || ''} src="/static/images/avatar/2.jpg" />
+                    </IconButton>
+                  </Grid>
+                  </Grid>
                 </Tooltip>
                 <Menu
                 sx={{ mt: '45px' }}
@@ -129,12 +142,14 @@ function ResponsiveAppBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
                 >
-                {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
+                    <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">My Orders</Typography>
                     </MenuItem>
-                ))}
+                    <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">Logout</Typography>
+                    </MenuItem>
                 </Menu>
+              </> : <Button variant='contained' color='success' onClick={handleLogin}>Login</Button>}
             </Box>
           </Box>
         </Toolbar>
